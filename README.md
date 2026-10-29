@@ -2,10 +2,10 @@
 
 ## Team Members:
 
-* 
-* 
-* 
-* 
+* Nasir Sims
+* Luke Treiman
+* Evan Xia
+* Lydia Zhang
 
 ## User stories
 
