@@ -1,12 +1,12 @@
 package main;
 
-import java.util.Scanner;
 import java.util.List;
+import java.util.Scanner;
 
 public class MainMenu {
 
-  private static final int EXIT_SELECTION = 6;
-	private static final int MAX_SELECTION = 6;
+    private static final int EXIT_SELECTION = 7;
+    private static final int MAX_SELECTION = 7;
 
     private AccountManager accountManager;
     private BankAccount userAccount;
@@ -25,8 +25,9 @@ public class MainMenu {
         System.out.println("2. View transaction history");
         System.out.println("3. Create a new account");
         System.out.println("4. Switch account");
-        System.out.println("5. Check account balance");
-        System.out.println("6. Exit the app");
+        System.out.println("5. Make a withdrawal");
+        System.out.println("6. Check account balance");
+        System.out.println("7. Exit the app");
     }
 
     public int getUserSelection(int max) {
@@ -53,6 +54,9 @@ public class MainMenu {
                 switchAccount();
                 break;
             case 5:
+                 performWithdrawal();
+                break;
+            case 6:
                 performCheckBalance();
                 break;
         }
@@ -100,6 +104,22 @@ public class MainMenu {
         int selection = getUserSelection(accountManager.getAccountCount());
         userAccount = accountManager.getAccount(selection - 1);
         System.out.println("Selected Account " + selection);
+    }
+
+    //case to perform a withdraw, checks account balance throughout various steps
+    public void performWithdrawal() {
+        if(userAccount.getBalance() <= 0) {
+            System.out.println("You don't have the available funds to make a withdrawal.");
+            return;
+        }
+        System.out.print("How much would you like to withdraw: ");
+        double withdrawAmount = keyboardInput.nextDouble();
+
+        if(withdrawAmount <= 0 || withdrawAmount > userAccount.getBalance()) {
+            System.out.println("You don't have the available funds to make a withdrawal.");
+        } else {
+            userAccount.withdraw(withdrawAmount);
+        }
     }
 
     public void run() {
