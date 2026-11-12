@@ -76,7 +76,7 @@ public class MainMenu {
 
     public void createAdditionalAccount(){
         userAccount = accountManager.createAccount();
-        System.out.println("Account " + accountManager.getAccountCount() + " cr
+        System.out.println("Account " + accountManager.getAccountCount() + " created and selected.");
     }
 
     public void switchAccount(){
