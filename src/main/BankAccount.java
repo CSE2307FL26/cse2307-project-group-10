@@ -3,19 +3,37 @@ package main;
 public class BankAccount {
 
     private double balance;
+    private boolean closed;
 
     public BankAccount() {
         this.balance = 0;
+        this.closed = false;
     }
 
     public void deposit(double amount) {
-        if(amount > 0) {
+        if (closed) {
+            throw new IllegalStateException("Account is closed");
+        }
+        if (amount > 0) {
             this.balance += amount;
         } else {
             throw new IllegalArgumentException();
         }
     }
 
+    public void close() {
+        if (closed) {
+            throw new IllegalStateException("Account already closed");
+        }
+        if (balance != 0) {
+            throw new IllegalStateException("Account still has money");
+        }
+        closed = true;
+    }
+
+    public boolean isClosed() {
+        return closed;
+    }
     public double getBalance() {
         return this.balance;
     }
