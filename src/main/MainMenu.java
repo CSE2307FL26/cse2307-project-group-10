@@ -5,8 +5,8 @@ import java.util.Scanner;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 4;
-	private static final int MAX_SELECTION = 4;
+    private static final int EXIT_SELECTION = 3;
+	private static final int MAX_SELECTION = 3;
 
 	private BankAccount userAccount;
     private Scanner keyboardInput;
@@ -21,7 +21,6 @@ public class MainMenu {
         
         System.out.println("1. Make a deposit");
         System.out.println("2. Admin: Collect a fee");
-        System.out.println("3. Admin: Apply interest");
         System.out.println("3. Exit the app");
 
     }
@@ -42,9 +41,6 @@ public class MainMenu {
                 break;
             case 2:
                 performCollectFee();
-                break;
-            case 3:
-                performApplyInterest();
                 break;
         }
     }
@@ -67,20 +63,6 @@ public class MainMenu {
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid fee amount. No fee was collected.");
         }
-    }
-
-    public void performApplyInterest(){
-        System.out.print("Enter the interest rate as a percent (e.g. 5 for 5%): ");
-        double ratePercent = keyboardInput.nextDouble();
-        try {
-            userAccount.applyInterest(ratePercent / 100);
-            System.out.printf("Interest added. New balance: $%.2f%n", userAccount.getBalance());
-        } catch (IllegalArgumentException e) {
-            System.out.println("Invalid interest rate. No interest was added.");
-        } catch (IllegalStateException e) {
-            System.out.println("Account balance is negative. No interest was added.");
-        }
-
     }
 
     public void run() {
