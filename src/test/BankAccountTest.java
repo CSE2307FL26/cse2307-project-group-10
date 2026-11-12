@@ -74,4 +74,21 @@ public class BankAccountTest {
         }
         assertEquals(50, testAccount.getBalance(), 0.01);
     }
+
+    //Testing double functionality after PR review
+    @Test 
+    public void testWithdrawDecimal() {
+        BankAccount testAccount = new BankAccount();
+        testAccount.deposit(100);
+        testAccount.withdraw(12.50);
+        assertEquals(87.50, testAccount.getBalance(), 0.01);
+    }
+
+    @Test 
+    public void testWithdrawDecimalFromDecimalBalance() {
+        BankAccount testAccount = new BankAccount();
+        testAccount.deposit(20.75);
+        testAccount.withdraw(5.25);
+        assertEquals(15.50, testAccount.getBalance(), 0.01);
+    }
 }

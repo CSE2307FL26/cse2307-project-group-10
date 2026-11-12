@@ -60,7 +60,7 @@ public class MainMenu {
             return;
         }
         System.out.print("How much would you like to withdraw: ");
-        double withdrawAmount = keyboardInput.nextInt();
+        double withdrawAmount = keyboardInput.nextDouble();
         
         if(withdrawAmount <= 0 || withdrawAmount > userAccount.getBalance()) {
             System.out.println("You don't have the available funds to make a withdrawal.");
