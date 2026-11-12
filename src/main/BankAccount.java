@@ -26,15 +26,4 @@ public class BankAccount {
         }
         this.balance -= amount;
     }
-
-    public void applyInterest(double rate) {
-        if (rate <= 0) {
-            throw new IllegalArgumentException();
-        }
-        if (this.balance < 0) {
-            throw new IllegalStateException();
-        }
-        
-        this.balance += this.balance * rate;
-    }
 }
