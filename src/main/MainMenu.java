@@ -2,11 +2,12 @@ package main;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.List;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 3;
-	private static final int MAX_SELECTION = 3;
+    private static final int EXIT_SELECTION = 4;
+	private static final int MAX_SELECTION = 4;
 
 	private BankAccount userAccount;
     private Scanner keyboardInput;
@@ -24,8 +25,8 @@ public class MainMenu {
         
         System.out.println("1. Make a deposit");
         System.out.println("2. Check account balance");
-        System.out.println("3. Exit the app");
-
+        System.out.println("3. View transaction history");
+        System.out.println("4. Exit the app");
     }
 
     public int getUserSelection(int max) {
@@ -45,6 +46,9 @@ public class MainMenu {
             case 2:
                 performCheckBalance();
                 break;
+=======     case 3:
+                displayTransactionHistory();
+                break;
         }
     }
 
@@ -61,6 +65,16 @@ public class MainMenu {
         for (int i = 0; i < accounts.size(); i++) {
             double balance = accounts.get(i).getBalance();
             System.out.println("Account " + (i + 1) + ": $" + String.format("%.2f", balance));
+        }
+    }
+    public void displayTransactionHistory() {
+        List<String> history = userAccount.getTransactionHistory();
+        if(history.isEmpty()) {
+            System.out.println("No transactions have been made.");
+            return;
+        }
+        for (String transaction : history) {
+            System.out.println(transaction);
         }
     }
 
