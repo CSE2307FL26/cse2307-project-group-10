@@ -3,11 +3,10 @@ package main;
 import java.util.List;
 import java.util.Scanner;
 
-
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 10;
-    private static final int MAX_SELECTION = 10;
+    private static final int EXIT_SELECTION = 11;
+    private static final int MAX_SELECTION = 11;
 
     private BankAccount userAccount;
     private AccountManager accountManager;
@@ -30,7 +29,8 @@ public class MainMenu {
         System.out.println("7. Transfer money");
         System.out.println("8. Admin: Collect a fee");
         System.out.println("9. Admin: Apply interest");
-        System.out.println("10. Exit the app");
+        System.out.println("10. Close account");
+        System.out.println("11. Exit the app");
     }
 
     public int getUserSelection(int max) {
@@ -71,6 +71,9 @@ public class MainMenu {
             case 9:
                 performApplyInterest();
                 break;
+            case 10:
+                performClose();
+                break;
         }
     }
 
@@ -83,6 +86,8 @@ public class MainMenu {
             System.out.println("Deposit complete");
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid deposit");
+        } catch (IllegalStateException e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -179,9 +184,13 @@ public class MainMenu {
     public void performCollectFee() {
         System.out.print("Enter the fee amount to collect: ");
         double feeAmount = keyboardInput.nextDouble();
+
         try {
             userAccount.collectFee(feeAmount);
-            System.out.printf("Fee collected. New balance: $%.2f%n", userAccount.getBalance());
+            System.out.printf(
+                "Fee collected. New balance: $%.2f%n",
+                userAccount.getBalance()
+            );
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid fee amount. No fee was collected.");
         }
@@ -190,13 +199,26 @@ public class MainMenu {
     public void performApplyInterest() {
         System.out.print("Enter the interest rate as a percent (e.g. 5 for 5%): ");
         double ratePercent = keyboardInput.nextDouble();
+
         try {
             userAccount.applyInterest(ratePercent / 100);
-            System.out.printf("Interest added. New balance: $%.2f%n", userAccount.getBalance());
+            System.out.printf(
+                "Interest added. New balance: $%.2f%n",
+                userAccount.getBalance()
+            );
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid interest rate. No interest was added.");
         } catch (IllegalStateException e) {
             System.out.println("Account balance is negative. No interest was added.");
+        }
+    }
+
+    public void performClose() {
+        try {
+            userAccount.close();
+            System.out.println("Account closed");
+        } catch (IllegalStateException e) {
+            System.out.println(e.getMessage());
         }
     }
 
