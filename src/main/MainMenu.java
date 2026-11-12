@@ -5,11 +5,11 @@ import java.util.Scanner;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 6;
-        private static final int MAX_SELECTION = 6;
-    private AccountManager accountManager;
+    private static final int EXIT_SELECTION = 7;
+    private static final int MAX_SELECTION = 7;
 
-        private BankAccount userAccount;
+    private AccountManager accountManager;
+    private BankAccount userAccount;
     private Scanner keyboardInput;
 
     public MainMenu() {
@@ -26,7 +26,8 @@ public class MainMenu {
         System.out.println("3. Create a new account");
         System.out.println("4. Switch account");
         System.out.println("5. Make a withdrawal");
-        System.out.println("6. Exit the app");
+        System.out.println("6. Check account balance");
+        System.out.println("7. Exit the app");
     }
 
     public int getUserSelection(int max) {
@@ -46,14 +47,17 @@ public class MainMenu {
             case 2:
                 displayTransactionHistory();
                 break;
-            case 3:
+		        case 3:
                 createAdditionalAccount();
                 break;
             case 4:
                 switchAccount();
                 break;
             case 5:
-                performWithdrawal();
+                 performWithdrawal();
+                break;
+            case 6:
+                performCheckBalance();
                 break;
         }
     }
@@ -67,6 +71,16 @@ public class MainMenu {
         userAccount.deposit(depositAmount);
     }
 
+   public void performCheckBalance() {
+    for (int i = 0; i < accountManager.getAccountCount(); i++) {
+        double balance = accountManager.getAccount(i).getBalance();
+
+        System.out.println(
+            "Account " + (i + 1) + ": $" + String.format("%.2f", balance)
+        );
+    }
+}
+  
     public void displayTransactionHistory() {
         List<String> history = userAccount.getTransactionHistory();
         if(history.isEmpty()) {
