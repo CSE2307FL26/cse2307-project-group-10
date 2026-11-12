@@ -5,11 +5,9 @@ import main.BankAccount;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import org.junit.Before;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 public class BankAccountTest {
-    private BankAccount testAccount;
 
     @Test
     public void testDeposit() {
@@ -29,8 +27,54 @@ public class BankAccountTest {
         }
     }
 
+    @Test
+    public void testDepositCreatesTransactionHistory(){
+        BankAccount testAccount = new BankAccount();
+
+        testAccount.deposit(100);
+        assertEquals(1, testAccount.getTransactionHistory().size());
+        assertEquals("Deposit: +100.0, Balance: 100.0", testAccount.getTransactionHistory().get(0));
+    }
+
+    @Test
+    public void testNewAccountHasNoTransactionHistory(){
+        BankAccount testAccount = new BankAccount();
+        assertEquals(0, testAccount.getTransactionHistory().size());
+    }
+
+    @Test
+    public void testTransactionHistoryKeepsOrder(){
+        BankAccount testAccount = new BankAccount();
+        testAccount.deposit(100);
+        testAccount.deposit(50);
+        assertEquals(2, testAccount.getTransactionHistory().size());
+        assertEquals("Deposit: +100.0, Balance: 100.0", testAccount.getTransactionHistory().get(0));
+        assertEquals("Deposit: +50.0, Balance: 150.0", testAccount.getTransactionHistory().get(1));
+    }
+
+    @Test
+    public void testInvalidDepositDoesNotCreateTransactionHistory(){
+        BankAccount testAccount = new BankAccount();
+        try {
+            testAccount.deposit(-50);
+            fail();
+        } catch (IllegalArgumentException e) {
+            //do nothing, test passes
+        }
+        assertEquals(0, testAccount.getTransactionHistory().size());
+    }
+
+    @Test
+    public void testReturnedHistoryDoesNotChangeAccount(){
+        BankAccount testAccount = new BankAccount();
+        testAccount.deposit(100);
+
+        testAccount.getTransactionHistory().clear();
+        assertEquals(1, testAccount.getTransactionHistory().size());
+    }
+
     //Test withdraw functionality
-    @Test 
+    @Test
     public void testWithdraw() {
         BankAccount testAccount = new BankAccount();
         testAccount.deposit(100);
@@ -39,7 +83,7 @@ public class BankAccountTest {
     }
 
     //Test whether you can withdraw your entire balance
-    @Test 
+    @Test
     public void testWithdrawFullBalance() {
         BankAccount testAccount = new BankAccount();
         testAccount.deposit(50);
@@ -48,7 +92,7 @@ public class BankAccountTest {
     }
 
     //Test whether you can withdraw a negative balance
-    @Test 
+    @Test
     public void testInvalidWithdraw() {
         BankAccount testAccount = new BankAccount();
         testAccount.deposit(50);
@@ -62,7 +106,7 @@ public class BankAccountTest {
     }
 
     //Test whether you can withdraw more than is in your account balance
-    @Test 
+    @Test
     public void testWithdrawOverdraft() {
         BankAccount testAccount = new BankAccount();
         testAccount.deposit(50);
@@ -76,7 +120,7 @@ public class BankAccountTest {
     }
 
     //Testing double functionality after PR review
-    @Test 
+    @Test
     public void testWithdrawDecimal() {
         BankAccount testAccount = new BankAccount();
         testAccount.deposit(100);
@@ -84,7 +128,7 @@ public class BankAccountTest {
         assertEquals(87.50, testAccount.getBalance(), 0.01);
     }
 
-    @Test 
+    @Test
     public void testWithdrawDecimalFromDecimalBalance() {
         BankAccount testAccount = new BankAccount();
         testAccount.deposit(20.75);
