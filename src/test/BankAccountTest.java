@@ -26,4 +26,29 @@ public class BankAccountTest {
             //do nothing, test passes
         }
     }
+
+    @Test 
+    public void testNewAccountBalanceIsZero() {
+        BankAccount testAccount = new BankAccount();
+        assertEquals(0, testAccount.getBalance(), 0.01);
+    }
+
+    @Test 
+    public void testBalanceAfterMultipleDeposits() {
+        BankAccount testAccount = new BankAccount();
+        testAccount.deposit(20);
+        testAccount.deposit(30);
+        assertEquals(50, testAccount.getBalance(), 0.01);
+    }
+
+    @Test 
+    public void testSeperateAccountsSeperateBalances() {
+        BankAccount account1 = new BankAccount();
+        BankAccount account2 = new BankAccount();
+
+        account1.deposit(50);
+        account2.deposit(30);
+        assertEquals(50, account1.getBalance(), 0.01);
+        assertEquals(30, account2.getBalance(), 0.01);
+    }
 }
