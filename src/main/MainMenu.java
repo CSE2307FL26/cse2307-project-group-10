@@ -46,7 +46,7 @@ public class MainMenu {
             case 2:
                 performCheckBalance();
                 break;
-=======     case 3:
+		    case 3:
                 displayTransactionHistory();
                 break;
         }
