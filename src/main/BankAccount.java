@@ -21,6 +21,16 @@ public class BankAccount {
         }
     }
 
+    public void transferTo(BankAccount other, double amount) {
+        if (other == null || other == this || amount <= 0
+                || !Double.isFinite(amount) || amount > balance) {
+            throw new IllegalArgumentException("Invalid transfer");
+        }
+
+        balance = balance - amount;
+        other.balance = other.balance + amount;
+    }
+
     public void close() {
         if (closed) {
             throw new IllegalStateException("Account already closed");
@@ -34,6 +44,7 @@ public class BankAccount {
     public boolean isClosed() {
         return closed;
     }
+
     public double getBalance() {
         return this.balance;
     }
@@ -52,7 +63,7 @@ public class BankAccount {
         if (this.balance < 0) {
             throw new IllegalStateException();
         }
-        
+
         this.balance += this.balance * rate;
     }
 }
