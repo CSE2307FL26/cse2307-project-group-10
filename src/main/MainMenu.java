@@ -2,11 +2,10 @@ package main;
 
 import java.util.Scanner;
 
-
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 3;
-	private static final int MAX_SELECTION = 3;
+    private static final int EXIT_SELECTION = 2;
+	private static final int MAX_SELECTION = 2;
 
 	private BankAccount userAccount;
     private Scanner keyboardInput;
@@ -20,8 +19,7 @@ public class MainMenu {
         System.out.println("Welcome to the 237 Bank App!");
         
         System.out.println("1. Make a deposit");
-        System.out.println("2. Admin: Collect a fee");
-        System.out.println("3. Exit the app");
+        System.out.println("2. Exit the app");
 
     }
 
@@ -38,10 +36,6 @@ public class MainMenu {
         switch (selection) {
             case 1:
                 performDeposit();
-                break;
-            case 2:
-                performCollectFee();
-                break;
         }
     }
 
@@ -52,17 +46,6 @@ public class MainMenu {
             depositAmount = keyboardInput.nextInt();
         }
         userAccount.deposit(depositAmount);
-    }
-
-    public void performCollectFee() {
-        System.out.print("Enter the fee amount to collect: ");
-        double feeAmount = keyboardInput.nextDouble();
-        try {
-            userAccount.collectFee(feeAmount);
-            System.out.printf("Fee collected. New balance: $%.2f%n", userAccount.getBalance());
-        } catch (IllegalArgumentException e) {
-            System.out.println("Invalid fee amount. No fee was collected.");
-        }
     }
 
     public void run() {
