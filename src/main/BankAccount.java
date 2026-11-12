@@ -1,3 +1,4 @@
+
 package main;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ public class BankAccount {
     }
 
     public void deposit(double amount) {
-        if(amount > 0) {
+        if (amount > 0) {
             this.balance += amount;
             transactionHistory.add("Deposit: +" + amount + ", Balance: " + balance);   
         } else {
@@ -28,7 +29,15 @@ public class BankAccount {
             throw new IllegalArgumentException();
         }
     }
+    public void transferTo(BankAccount other, double amount) {
+    if (other == null || other == this || amount <= 0
+            || !Double.isFinite(amount) || amount > balance) {
+        throw new IllegalArgumentException("Invalid transfer");
+    }
 
+    balance = balance - amount;
+    other.balance = other.balance + amount;
+}
     public double getBalance() {
         return this.balance;
     }
