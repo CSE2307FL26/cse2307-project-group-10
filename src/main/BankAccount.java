@@ -21,6 +21,9 @@ public class BankAccount {
     }
 
     public void collectFee(double amount) {
-       this.balance -= amount;
+        if (amount <= 0) {
+            throw new IllegalArgumentException();
+        }
+        this.balance -= amount;
     }
 }
