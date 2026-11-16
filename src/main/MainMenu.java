@@ -9,11 +9,11 @@ public class MainMenu {
     private static final int MAX_SELECTION = 11;
 
     private BankAccount userAccount;
-    private AccountManager accountManager;
+    private Bank accountManager;
     private Scanner keyboardInput;
 
     public MainMenu() {
-        this.accountManager = new AccountManager();
+        this.accountManager = new Bank();
         this.userAccount = accountManager.createAccount();
         this.keyboardInput = new Scanner(System.in);
     }

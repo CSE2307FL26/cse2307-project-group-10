@@ -3,7 +3,7 @@ package main;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AccountManager {
+public class Bank {
     private final List<BankAccount> accounts = new ArrayList<>();
 
     public BankAccount createAccount(){
