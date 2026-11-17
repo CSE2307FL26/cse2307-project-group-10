@@ -6,11 +6,23 @@ public class BankAccount {
 
     private double balance;
     private boolean closed;
+    private String accountName;
     private final List<String> transactionHistory = new ArrayList<>();
 
     public BankAccount() {
         this.balance = 0;
         this.closed = false;
+        this.accountName = "Unnamed Account";
+    }
+
+    public String getAccountName() {
+    return accountName;
+}
+    public void setAccountName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Invalid account name");
+        }
+        accountName = name.trim();
     }
 
     public void deposit(double amount) {

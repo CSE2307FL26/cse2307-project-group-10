@@ -306,5 +306,46 @@ public class BankAccountTest {
             assertEquals(0, account.getBalance(), 0.01);
         }
     }
+    @Test
+    public void testDefaultAccountName() {
+        BankAccount account = new BankAccount();
+        assertEquals("Unnamed Account", account.getAccountName());
+    }
+    @Test
+    public void testRenameAccount() {
+        BankAccount account = new BankAccount();
 
+        account.setAccountName("Savings");
+        assertEquals("Savings", account.getAccountName());
+    }
+    @Test
+    public void testEmptyAccountName() {
+        BankAccount account = new BankAccount();
+
+        assertThrows(IllegalArgumentException.class,
+            () -> account.setAccountName(""));
+    }
+    @Test
+    public void testBlankAccountName() {
+        BankAccount account = new BankAccount();
+        assertThrows(IllegalArgumentException.class,
+            () -> account.setAccountName("   "));
+        }
+    @Test
+    public void testRenameDoesNotChangeBalance() {
+        BankAccount account = new BankAccount();
+        account.deposit(100);
+        account.setAccountName("Savings");
+        assertEquals(100, account.getBalance(), 0.01);
+    }
+    @Test
+    public void testRenameOnlyOneAccount() {
+        BankAccount account1 = new BankAccount();
+        BankAccount account2 = new BankAccount();
+
+        account2.setAccountName("Savings");
+
+        assertEquals("Unnamed Account", account1.getAccountName());
+        assertEquals("Savings", account2.getAccountName());
+    }
 }

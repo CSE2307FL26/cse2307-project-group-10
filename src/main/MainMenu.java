@@ -5,17 +5,19 @@ import java.util.Scanner;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 11;
-    private static final int MAX_SELECTION = 11;
+    private static final int EXIT_SELECTION = 12;
+    private static final int MAX_SELECTION = 12;
 
     private BankAccount userAccount;
     private Bank accountManager;
     private Scanner keyboardInput;
+    private AccountMenu accountMenu;
 
     public MainMenu() {
         this.accountManager = new Bank();
         this.userAccount = accountManager.createAccount();
         this.keyboardInput = new Scanner(System.in);
+        this.accountMenu = new AccountMenu(keyboardInput);
     }
 
     public void displayOptions() {
@@ -30,7 +32,8 @@ public class MainMenu {
         System.out.println("8. Admin: Collect a fee");
         System.out.println("9. Admin: Apply interest");
         System.out.println("10. Close account");
-        System.out.println("11. Exit the app");
+        System.out.println("11. Rename account");
+        System.out.println("12. Exit the app");
     }
 
     public int getUserSelection(int max) {
@@ -73,6 +76,9 @@ public class MainMenu {
                 break;
             case 10:
                 performClose();
+                break;
+            case 11:
+                accountMenu.performRename(accountManager);
                 break;
         }
     }
