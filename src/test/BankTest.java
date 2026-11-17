@@ -5,17 +5,17 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import main.AccountManager;
+import main.Bank;
 import main.BankAccount;
 
 
-public class AccountManagerTest {
+public class BankTest {
 
-    private AccountManager manager;
+    private Bank manager;
 
     @Before
     public void setUp(){
-        manager = new AccountManager();
+        manager = new Bank();
     }
 
     @Test 
