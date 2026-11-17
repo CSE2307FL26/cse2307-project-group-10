@@ -34,12 +34,24 @@ public class MainMenu {
     }
 
     public int getUserSelection(int max) {
-        int selection = -1;
-        while (selection < 1 || selection > max) {
+        while (true) {
             System.out.print("Please make a selection: ");
-            selection = keyboardInput.nextInt();
+            try {
+                return Bank.parseSelection(keyboardInput.nextLine(), max);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Please enter a number from 1 to " + max + ".");
+            }
         }
-        return selection;
+    }
+
+    public double getUserAmount() {
+        while (true) {
+            try {
+                return Bank.parseAmount(keyboardInput.nextLine());
+            } catch (IllegalArgumentException e) {
+                System.out.print("Please enter a valid number: ");
+            }
+        }
     }
 
     public void processInput(int selection) {
@@ -79,7 +91,7 @@ public class MainMenu {
 
     public void performDeposit() {
         System.out.print("How much would you like to deposit: ");
-        double depositAmount = keyboardInput.nextDouble();
+        double depositAmount = getUserAmount();
 
         try {
             userAccount.deposit(depositAmount);
@@ -107,7 +119,7 @@ public class MainMenu {
         int to = getUserSelection(accountManager.getAccountCount());
 
         System.out.println("How much would you like to transfer?");
-        double amount = keyboardInput.nextDouble();
+        double amount = getUserAmount();
 
         try {
             BankAccount source = accountManager.getAccount(from - 1);
@@ -170,7 +182,7 @@ public class MainMenu {
         }
 
         System.out.print("How much would you like to withdraw: ");
-        double withdrawAmount = keyboardInput.nextDouble();
+        double withdrawAmount = getUserAmount();
 
         if (withdrawAmount <= 0 || withdrawAmount > userAccount.getBalance()) {
             System.out.println(
@@ -183,7 +195,7 @@ public class MainMenu {
 
     public void performCollectFee() {
         System.out.print("Enter the fee amount to collect: ");
-        double feeAmount = keyboardInput.nextDouble();
+        double feeAmount = getUserAmount();
 
         try {
             userAccount.collectFee(feeAmount);
@@ -198,7 +210,7 @@ public class MainMenu {
 
     public void performApplyInterest() {
         System.out.print("Enter the interest rate as a percent (e.g. 5 for 5%): ");
-        double ratePercent = keyboardInput.nextDouble();
+        double ratePercent = getUserAmount();
 
         try {
             userAccount.applyInterest(ratePercent / 100);
