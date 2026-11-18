@@ -5,21 +5,24 @@ import java.util.Scanner;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 11;
-    private static final int MAX_SELECTION = 11;
+    private static final int EXIT_SELECTION = 12;
+    private static final int MAX_SELECTION = 12;
 
     private BankAccount userAccount;
     private Bank accountManager;
     private Scanner keyboardInput;
+    private AccountMenu accountMenu;
 
     public MainMenu() {
         this.accountManager = new Bank();
         this.userAccount = accountManager.createAccount();
         this.keyboardInput = new Scanner(System.in);
+        this.accountMenu = new AccountMenu(keyboardInput);
     }
 
     public void displayOptions() {
         System.out.println("Welcome to the 237 Bank App!");
+        System.out.println("Current account: " + userAccount.getAccountName());
         System.out.println("1. Make a deposit");
         System.out.println("2. View transaction history");
         System.out.println("3. Create a new account");
@@ -30,7 +33,8 @@ public class MainMenu {
         System.out.println("8. Admin: Collect a fee");
         System.out.println("9. Admin: Apply interest");
         System.out.println("10. Close account");
-        System.out.println("11. Exit the app");
+        System.out.println("11. Rename account");
+        System.out.println("12. Exit the app");
     }
 
     public int getUserSelection(int max) {
@@ -74,9 +78,18 @@ public class MainMenu {
             case 10:
                 performClose();
                 break;
+            case 11:
+                accountMenu.performRename(accountManager);
+                break;
         }
     }
-
+    private void printAccounts() {
+        for (int i = 0; i < accountManager.getAccountCount(); i++) {
+            BankAccount account = accountManager.getAccount(i);
+            String status = account.isClosed() ? " (closed)" : "";
+            System.out.println((i + 1) + ". " + account.getAccountName() + status);
+        }
+    }
     public void performDeposit() {
         System.out.print("How much would you like to deposit: ");
         double depositAmount = keyboardInput.nextDouble();
@@ -98,23 +111,20 @@ public class MainMenu {
         }
 
         System.out.println("Choose account to transfer FROM:");
-        for (int i = 0; i < accountManager.getAccountCount(); i++) {
-            System.out.println((i + 1) + ". Account " + (i + 1));
-        }
+        printAccounts();
         int from = getUserSelection(accountManager.getAccountCount());
 
         System.out.println("Choose account to transfer TO:");
+        printAccounts();
         int to = getUserSelection(accountManager.getAccountCount());
-
         System.out.println("How much would you like to transfer?");
         double amount = keyboardInput.nextDouble();
-
         try {
             BankAccount source = accountManager.getAccount(from - 1);
             BankAccount destination = accountManager.getAccount(to - 1);
 
             source.transferTo(destination, amount);
-            System.out.println("Transfer complete");
+            System.out.printf("Transferred $%.2f from %s to %s%n", amount, source.getAccountName(), destination.getAccountName());
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
@@ -122,15 +132,14 @@ public class MainMenu {
 
     public void performCheckBalance() {
         for (int i = 0; i < accountManager.getAccountCount(); i++) {
-            double balance = accountManager.getAccount(i).getBalance();
-
-            System.out.println(
-                "Account " + (i + 1) + ": $" + String.format("%.2f", balance)
-            );
+            BankAccount account = accountManager.getAccount(i);
+            System.out.printf("%d. %s: $%.2f%n",
+                i + 1, account.getAccountName(), account.getBalance());
         }
     }
 
     public void displayTransactionHistory() {
+        System.out.println("Transaction history for " + userAccount.getAccountName() + ":");
         List<String> history = userAccount.getTransactionHistory();
 
         if (history.isEmpty()) {
@@ -145,20 +154,17 @@ public class MainMenu {
 
     public void createAdditionalAccount() {
         userAccount = accountManager.createAccount();
-        System.out.println(
-            "Account " + accountManager.getAccountCount() + " created and selected."
-        );
+        System.out.println(userAccount.getAccountName() + " created and selected.");
     }
 
     public void switchAccount() {
-        for (int i = 0; i < accountManager.getAccountCount(); i++) {
-            System.out.println("Account " + (i + 1));
-        }
+        System.out.println("Choose an account:");
+        printAccounts();
 
         int selection = getUserSelection(accountManager.getAccountCount());
         userAccount = accountManager.getAccount(selection - 1);
 
-        System.out.println("Selected Account " + selection);
+        System.out.println("Selected " + userAccount.getAccountName());
     }
 
     public void performWithdrawal() {
@@ -216,7 +222,7 @@ public class MainMenu {
     public void performClose() {
         try {
             userAccount.close();
-            System.out.println("Account closed");
+            System.out.println(userAccount.getAccountName() + " closed");
         } catch (IllegalStateException e) {
             System.out.println(e.getMessage());
         }
