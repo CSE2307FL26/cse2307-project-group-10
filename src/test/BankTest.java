@@ -93,4 +93,23 @@ public class BankTest {
             //do nothing, test passes
         }
     }
+    @Test
+    public void testNewAccountsGetNumberedNames(){
+        manager.createAccount();
+        manager.createAccount();
+        assertEquals("Account 1", manager.getAccount(0).getAccountName());
+        assertEquals("Account 2", manager.getAccount(1).getAccountName());
+    }
+
+    @Test
+    public void testRenamedAccountKeepsNameAfterTransfer(){
+        manager.createAccount();
+        manager.createAccount();
+        manager.getAccount(1).setAccountName("Savings");
+        manager.getAccount(0).deposit(100);
+        manager.getAccount(0).transferTo(manager.getAccount(1), 40);
+        assertEquals("Savings", manager.getAccount(1).getAccountName());
+        assertEquals("Account 1", manager.getAccount(0).getAccountName());
+        assertEquals(40, manager.getAccount(1).getBalance(), 0.01);
+    }
 }
