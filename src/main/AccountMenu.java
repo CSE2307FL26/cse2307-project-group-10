@@ -23,15 +23,15 @@ public class AccountMenu {
                 bank.getAccount(i).getAccountName());
         }
         System.out.print("Choose an account: ");
-        int selection = keyboardInput.nextInt();
-
-        if (selection < 1 || selection > bank.getAccountCount()) {
+         int selection;
+        try {
+            selection = Bank.parseSelection(keyboardInput.nextLine(), bank.getAccountCount());
+        } catch (IllegalArgumentException e) {
             System.out.println("Invalid account selection");
             return;
         }
         BankAccount account = bank.getAccount(selection - 1);
 
-        keyboardInput.nextLine();
         System.out.print("Enter a new account name: ");
         String name = keyboardInput.nextLine();
         try {

@@ -1,6 +1,7 @@
 package test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -56,6 +57,100 @@ public class BankTest {
         assertEquals(120, manager.getAccount(0).getBalance(), 0.01);
         assertEquals(50, manager.getAccount(1).getBalance(), 0.01);
     }
+
+    //Testing typed input is converted to a number
+    @Test
+    public void testParseWholeNumber(){
+        assertEquals(50, Bank.parseAmount("50"), 0.01);
+    }
+
+    @Test
+    public void testParseDouble(){
+        assertEquals(12.50, Bank.parseAmount("12.50"), 0.01);
+    }
+    
+    @Test
+    public void testParseNumberWithSpaces(){
+        assertEquals(20, Bank.parseAmount("  20  "), 0.01);
+    }
+
+    @Test
+    public void testParseLettersAreRejected(){
+        try {
+            Bank.parseAmount("abc");
+            fail();
+        } catch (IllegalArgumentException e) {
+            //do nothing, test passes
+        }
+    }
+
+    @Test
+    public void testParseEmptyInputIsRejected(){
+        try {
+            Bank.parseAmount("");
+            fail();
+        } catch (IllegalArgumentException e) {
+            //do nothing, test passes
+        }
+    }
+
+    //Testing menu selections are checked against the menu size
+    @Test
+    public void testParseSelectionInRange(){
+        assertEquals(3, Bank.parseSelection("3", 5));
+    }
+
+    @Test
+    public void testParseSelectionWithSpaces(){
+        assertEquals(2, Bank.parseSelection("  2  ", 5));
+    }
+
+    @Test
+    public void testParseSelectionEdges(){
+        assertEquals(1, Bank.parseSelection("1", 5));
+        assertEquals(5, Bank.parseSelection("5", 5));
+    }
+
+    @Test
+    public void testParseSelectionTooLowIsRejected(){
+        try {
+            Bank.parseSelection("0", 5);
+            fail();
+        } catch (IllegalArgumentException e) {
+            //do nothing, test passes
+        }
+    }
+
+    @Test
+    public void testParseSelectionTooHighIsRejected(){
+        try {
+            Bank.parseSelection("6", 5);
+            fail();
+        } catch (IllegalArgumentException e) {
+            //do nothing, test passes
+        }
+    }
+
+    @Test
+    public void testParseSelectionLettersAreRejected(){
+        try {
+            Bank.parseSelection("abc", 5);
+            fail();
+        } catch (IllegalArgumentException e) {
+            //do nothing, test passes
+        }
+    }
+
+    @Test
+    public void testParseSelectionDecimalIsRejected(){
+        try {
+            Bank.parseSelection("2.5", 5);
+            fail();
+        } catch (IllegalArgumentException e) {
+            //do nothing, test passes
+        }
+    }
+
     @Test
     public void testNewAccountsGetNumberedNames(){
         manager.createAccount();
