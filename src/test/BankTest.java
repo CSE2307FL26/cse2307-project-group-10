@@ -93,6 +93,64 @@ public class BankTest {
             //do nothing, test passes
         }
     }
+
+    //Testing menu selections are checked against the menu size
+    @Test
+    public void testParseSelectionInRange(){
+        assertEquals(3, Bank.parseSelection("3", 5));
+    }
+
+    @Test
+    public void testParseSelectionWithSpaces(){
+        assertEquals(2, Bank.parseSelection("  2  ", 5));
+    }
+
+    @Test
+    public void testParseSelectionEdges(){
+        assertEquals(1, Bank.parseSelection("1", 5));
+        assertEquals(5, Bank.parseSelection("5", 5));
+    }
+
+    @Test
+    public void testParseSelectionTooLowIsRejected(){
+        try {
+            Bank.parseSelection("0", 5);
+            fail();
+        } catch (IllegalArgumentException e) {
+            //do nothing, test passes
+        }
+    }
+
+    @Test
+    public void testParseSelectionTooHighIsRejected(){
+        try {
+            Bank.parseSelection("6", 5);
+            fail();
+        } catch (IllegalArgumentException e) {
+            //do nothing, test passes
+        }
+    }
+
+    @Test
+    public void testParseSelectionLettersAreRejected(){
+        try {
+            Bank.parseSelection("abc", 5);
+            fail();
+        } catch (IllegalArgumentException e) {
+            //do nothing, test passes
+        }
+    }
+
+    @Test
+    public void testParseSelectionDecimalIsRejected(){
+        try {
+            Bank.parseSelection("2.5", 5);
+            fail();
+        } catch (IllegalArgumentException e) {
+            //do nothing, test passes
+        }
+    }
+
     @Test
     public void testNewAccountsGetNumberedNames(){
         manager.createAccount();
