@@ -247,7 +247,7 @@ public class MainMenu {
 
         while(role == 2){
             adminMenu.displayOptions();
-            int choice = getUserSelection(3);
+            int choice = getUserSelection(4);
 
             if(choice == 1){
                 performCollectFee();
@@ -256,6 +256,9 @@ public class MainMenu {
                 performApplyInterest();
             }
             else if(choice == 3){
+                displayAdminActivityLog();
+            }
+            else if(choice == 4){
                 role = selectRole();
             }
             else{
