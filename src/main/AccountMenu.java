@@ -2,6 +2,7 @@
 package main;
 
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class AccountMenu {
 
@@ -42,4 +43,22 @@ public class AccountMenu {
             System.out.println(e.getMessage());
         }
     }
+
+    public void performListAccounts(Bank bank) {
+    ArrayList<String> summaries = bank.getAccountSummaries();
+
+    if (summaries.isEmpty()) {
+        System.out.println("No bank accounts available.");
+        return;
+    }
+
+    System.out.println("----- All Bank Accounts -----");
+
+    for (String summary : summaries) {
+        System.out.println(summary);
+        System.out.println();
+    }
+
+    System.out.println("Total Accounts: " + summaries.size());
+}
 }

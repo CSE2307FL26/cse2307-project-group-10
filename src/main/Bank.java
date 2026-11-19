@@ -46,6 +46,23 @@ public class Bank {
             throw new IllegalArgumentException();
         }
     }
+    
+    public ArrayList<String> getAccountSummaries() {
+    ArrayList<String> summaries = new ArrayList<>();
+
+    for (int i = 0; i < getAccountCount(); i++) {
+        BankAccount account = getAccount(i);
+
+        String summary = "Account " + (i + 1)
+                + "\nName: " + account.getAccountName()
+                + "\nBalance: $" + String.format("%.2f",
+                    account.getBalance());
+
+        summaries.add(summary);
+    }
+
+    return summaries;
+}
 }
 
 

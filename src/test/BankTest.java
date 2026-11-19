@@ -170,4 +170,39 @@ public class BankTest {
         assertEquals("Account 1", manager.getAccount(0).getAccountName());
         assertEquals(40, manager.getAccount(1).getBalance(), 0.01);
     }
+
+    @Test
+    public void testListNoAccounts() {
+        Bank bank = new Bank();
+        assertEquals(0, bank.getAccountSummaries().size());
+    }
+
+    @Test
+    public void testListOneAccount() {
+        Bank bank = new Bank();
+        bank.createAccount();
+        assertEquals(1, bank.getAccountSummaries().size());
+    }
+
+    @Test
+    public void testListMultipleAccounts() {
+        Bank bank = new Bank();
+        bank.createAccount();
+        bank.createAccount();
+        bank.createAccount();
+        assertEquals(3, bank.getAccountSummaries().size());
+    }
+
+    @Test
+    public void testListAccountInformation() {
+        Bank bank = new Bank();
+        bank.createAccount();
+        BankAccount account = bank.getAccount(0);
+        account.setAccountName("Savings");
+        account.deposit(500);
+        assertEquals(
+            "Account 1\nName: Savings\nBalance: $500.00",
+            bank.getAccountSummaries().get(0)
+        );
+    }
 }
