@@ -9,13 +9,13 @@ public class MainMenu {
     private static final int MAX_SELECTION = 12;
 
     private BankAccount userAccount;
-    private Bank accountManager;
+    private Bank bank;
     private Scanner keyboardInput;
     private AccountMenu accountMenu;
 
     public MainMenu() {
-        this.accountManager = new Bank();
-        this.userAccount = accountManager.createAccount();
+        this.bank = new Bank();
+        this.userAccount = bank.createAccount();
         this.keyboardInput = new Scanner(System.in);
         this.accountMenu = new AccountMenu(keyboardInput);
     }
@@ -79,13 +79,13 @@ public class MainMenu {
                 performClose();
                 break;
             case 11:
-                accountMenu.performRename(accountManager);
+                accountMenu.performRename(bank);
                 break;
         }
     }
     private void printAccounts() {
-        for (int i = 0; i < accountManager.getAccountCount(); i++) {
-            BankAccount account = accountManager.getAccount(i);
+        for (int i = 0; i < bank.getAccountCount(); i++) {
+            BankAccount account = bank.getAccount(i);
             String status = account.isClosed() ? " (closed)" : "";
             System.out.println((i + 1) + ". " + account.getAccountName() + status);
         }
@@ -105,23 +105,23 @@ public class MainMenu {
     }
 
     public void performTransfer() {
-        if (accountManager.getAccountCount() < 2) {
+        if (bank.getAccountCount() < 2) {
             System.out.println("You need at least two accounts");
             return;
         }
 
         System.out.println("Choose account to transfer FROM:");
         printAccounts();
-        int from = getUserSelection(accountManager.getAccountCount());
+        int from = getUserSelection(bank.getAccountCount());
 
         System.out.println("Choose account to transfer TO:");
         printAccounts();
-        int to = getUserSelection(accountManager.getAccountCount());
+        int to = getUserSelection(bank.getAccountCount());
         System.out.println("How much would you like to transfer?");
         double amount = keyboardInput.nextDouble();
         try {
-            BankAccount source = accountManager.getAccount(from - 1);
-            BankAccount destination = accountManager.getAccount(to - 1);
+            BankAccount source = bank.getAccount(from - 1);
+            BankAccount destination = bank.getAccount(to - 1);
 
             source.transferTo(destination, amount);
             System.out.printf("Transferred $%.2f from %s to %s%n", amount, source.getAccountName(), destination.getAccountName());
@@ -131,10 +131,22 @@ public class MainMenu {
     }
 
     public void performCheckBalance() {
-        for (int i = 0; i < accountManager.getAccountCount(); i++) {
-            BankAccount account = accountManager.getAccount(i);
+        for (int i = 0; i < bank.getAccountCount(); i++) {
+            BankAccount account = bank.getAccount(i);
             System.out.printf("%d. %s: $%.2f%n",
                 i + 1, account.getAccountName(), account.getBalance());
+        }
+    }
+    public void displayAdminActivityLog(){
+        List<String> entries = bank.getAdminActivityLog();
+
+        if(entries.isEmpty()){
+            System.out.println("No admin actions yet.");
+            return;
+        }
+
+        for (String entry: entries){
+            System.out.println(entry);
         }
     }
 
@@ -153,7 +165,7 @@ public class MainMenu {
     }
 
     public void createAdditionalAccount() {
-        userAccount = accountManager.createAccount();
+        userAccount = bank.createAccount();
         System.out.println(userAccount.getAccountName() + " created and selected.");
     }
 
@@ -161,8 +173,8 @@ public class MainMenu {
         System.out.println("Choose an account:");
         printAccounts();
 
-        int selection = getUserSelection(accountManager.getAccountCount());
-        userAccount = accountManager.getAccount(selection - 1);
+        int selection = getUserSelection(bank.getAccountCount());
+        userAccount = bank.getAccount(selection - 1);
 
         System.out.println("Selected " + userAccount.getAccountName());
     }
@@ -192,7 +204,7 @@ public class MainMenu {
         double feeAmount = keyboardInput.nextDouble();
 
         try {
-            userAccount.collectFee(feeAmount);
+            bank.collectFee(userAccount, feeAmount);
             System.out.printf(
                 "Fee collected. New balance: $%.2f%n",
                 userAccount.getBalance()
@@ -207,7 +219,7 @@ public class MainMenu {
         double ratePercent = keyboardInput.nextDouble();
 
         try {
-            userAccount.applyInterest(ratePercent / 100);
+            bank.applyInterest(userAccount, ratePercent / 100);
             System.out.printf(
                 "Interest added. New balance: $%.2f%n",
                 userAccount.getBalance()

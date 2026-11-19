@@ -18,6 +18,43 @@ public class BankTest {
         manager = new Bank();
     }
 
+    @Test
+    public void testAdminLogOrder(){
+        BankAccount account = manager.createAccount();
+        account.deposit(105);
+
+        manager.collectFee(account, 5);
+        manager.applyInterest(account, 0.05);
+
+        assertEquals(2, manager.getAdminActivityLog().size());
+        assertEquals("Charged a $5.00 fee to Account 1.", manager.getAdminActivityLog().get(0));
+        assertEquals("Paid $5.00 in interest to Account 1.", manager.getAdminActivityLog().get(1));
+    }
+
+    @Test
+    public void testNewSessionStartsWithEmptyAdminLog(){
+       BankAccount account = manager.createAccount();
+       account.deposit(20);
+       manager.collectFee(account, 5);
+       assertEquals(1, manager.getAdminActivityLog().size());
+
+       Bank newSession = new Bank();
+       assertEquals(0, newSession.getAdminActivityLog().size());
+    }
+
+    @Test
+    public void testInvalidFeeDoesNotCreateLogEntry(){
+        BankAccount account = manager.createAccount();
+        boolean feeRejected = false;
+        try{
+            manager.collectFee(account, -5);
+        } catch (IllegalArgumentException expected){
+            feeRejected = true;
+        }
+        assertEquals(true, feeRejected);
+        assertEquals(0, manager.getAdminActivityLog().size());
+    }
+
     @Test 
     public void testCreateAccount(){
         BankAccount account = manager.createAccount();
