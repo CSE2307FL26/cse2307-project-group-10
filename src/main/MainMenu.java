@@ -5,17 +5,17 @@ import java.util.Scanner;
 
 public class MainMenu {
 
-    private static final int EXIT_SELECTION = 12;
-    private static final int MAX_SELECTION = 12;
+    private static final int EXIT_SELECTION = 10;
+    private static final int MAX_SELECTION = 10;
 
     private BankAccount userAccount;
-    private Bank accountManager;
+    private Bank bank;
     private Scanner keyboardInput;
     private AccountMenu accountMenu;
 
     public MainMenu() {
-        this.accountManager = new Bank();
-        this.userAccount = accountManager.createAccount();
+        this.bank = new Bank();
+        this.userAccount = bank.createAccount();
         this.keyboardInput = new Scanner(System.in);
         this.accountMenu = new AccountMenu(keyboardInput);
     }
@@ -30,11 +30,9 @@ public class MainMenu {
         System.out.println("5. Make a withdrawal");
         System.out.println("6. Check account balance");
         System.out.println("7. Transfer money");
-        System.out.println("8. Admin: Collect a fee");
-        System.out.println("9. Admin: Apply interest");
-        System.out.println("10. Close account");
-        System.out.println("11. Rename account");
-        System.out.println("12. Exit the app");
+        System.out.println("8. Close account");
+        System.out.println("9. Rename account");
+        System.out.println("10. Back to role selection");
     }
 
     public int getUserSelection(int max) {
@@ -56,6 +54,14 @@ public class MainMenu {
                 System.out.print("Please enter a valid number: ");
             }
         }
+    }
+
+    private int selectRole() {
+        System.out.println("Choose your role:");
+        System.out.println("1. Customer");
+        System.out.println("2. Admin");
+        System.out.println("3. Exit");
+        return getUserSelection(3);
     }
 
     public void processInput(int selection) {
@@ -82,26 +88,22 @@ public class MainMenu {
                 performTransfer();
                 break;
             case 8:
-                performCollectFee();
-                break;
-            case 9:
-                performApplyInterest();
-                break;
-            case 10:
                 performClose();
                 break;
-            case 11:
-                accountMenu.performRename(accountManager);
+            case 9:
+                accountMenu.performRename(bank);
                 break;
         }
     }
+
     private void printAccounts() {
-        for (int i = 0; i < accountManager.getAccountCount(); i++) {
-            BankAccount account = accountManager.getAccount(i);
+        for (int i = 0; i < bank.getAccountCount(); i++) {
+            BankAccount account = bank.getAccount(i);
             String status = account.isClosed() ? " (closed)" : "";
             System.out.println((i + 1) + ". " + account.getAccountName() + status);
         }
     }
+
     public void performDeposit() {
         System.out.print("How much would you like to deposit: ");
         double depositAmount = getUserAmount();
@@ -117,37 +119,50 @@ public class MainMenu {
     }
 
     public void performTransfer() {
-        if (accountManager.getAccountCount() < 2) {
+        if (bank.getAccountCount() < 2) {
             System.out.println("You need at least two accounts");
             return;
         }
 
         System.out.println("Choose account to transfer FROM:");
         printAccounts();
-        int from = getUserSelection(accountManager.getAccountCount());
+        int from = getUserSelection(bank.getAccountCount());
 
         System.out.println("Choose account to transfer TO:");
         printAccounts();
-        int to = getUserSelection(accountManager.getAccountCount());
+        int to = getUserSelection(bank.getAccountCount());
         System.out.println("How much would you like to transfer?");
         double amount = getUserAmount();
 
         try {
-            BankAccount source = accountManager.getAccount(from - 1);
-            BankAccount destination = accountManager.getAccount(to - 1);
+            BankAccount source = bank.getAccount(from - 1);
+            BankAccount destination = bank.getAccount(to - 1);
 
             source.transferTo(destination, amount);
-            System.out.printf("Transferred $%.2f from %s to %s%n", amount, source.getAccountName(), destination.getAccountName());
+            System.out.printf("Transferred $%.2f from %s to %s%n", amount, source.getAccountName(),
+                    destination.getAccountName());
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
     }
 
     public void performCheckBalance() {
-        for (int i = 0; i < accountManager.getAccountCount(); i++) {
-            BankAccount account = accountManager.getAccount(i);
+        for (int i = 0; i < bank.getAccountCount(); i++) {
+            BankAccount account = bank.getAccount(i);
             System.out.printf("%d. %s: $%.2f%n",
-                i + 1, account.getAccountName(), account.getBalance());
+                    i + 1, account.getAccountName(), account.getBalance());
+        }
+    }
+    public void displayAdminActivityLog(){
+        List<String> entries = bank.getAdminActivityLog();
+
+        if(entries.isEmpty()){
+            System.out.println("No admin actions yet.");
+            return;
+        }
+
+        for (String entry: entries){
+            System.out.println(entry);
         }
     }
 
@@ -166,7 +181,7 @@ public class MainMenu {
     }
 
     public void createAdditionalAccount() {
-        userAccount = accountManager.createAccount();
+        userAccount = bank.createAccount();
         System.out.println(userAccount.getAccountName() + " created and selected.");
     }
 
@@ -174,8 +189,8 @@ public class MainMenu {
         System.out.println("Choose an account:");
         printAccounts();
 
-        int selection = getUserSelection(accountManager.getAccountCount());
-        userAccount = accountManager.getAccount(selection - 1);
+        int selection = getUserSelection(bank.getAccountCount());
+        userAccount = bank.getAccount(selection - 1);
 
         System.out.println("Selected " + userAccount.getAccountName());
     }
@@ -183,8 +198,7 @@ public class MainMenu {
     public void performWithdrawal() {
         if (userAccount.getBalance() <= 0) {
             System.out.println(
-                "You don't have the available funds to make a withdrawal."
-            );
+                    "You don't have the available funds to make a withdrawal.");
             return;
         }
 
@@ -193,8 +207,7 @@ public class MainMenu {
 
         if (withdrawAmount <= 0 || withdrawAmount > userAccount.getBalance()) {
             System.out.println(
-                "You don't have the available funds to make a withdrawal."
-            );
+                    "You don't have the available funds to make a withdrawal.");
         } else {
             userAccount.withdraw(withdrawAmount);
         }
@@ -205,11 +218,10 @@ public class MainMenu {
         double feeAmount = getUserAmount();
 
         try {
-            userAccount.collectFee(feeAmount);
+            bank.collectFee(userAccount, feeAmount);
             System.out.printf(
-                "Fee collected. New balance: $%.2f%n",
-                userAccount.getBalance()
-            );
+                    "Fee collected. New balance: $%.2f%n",
+                    userAccount.getBalance());
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid fee amount. No fee was collected.");
         }
@@ -220,11 +232,10 @@ public class MainMenu {
         double ratePercent = getUserAmount();
 
         try {
-            userAccount.applyInterest(ratePercent / 100);
+            bank.applyInterest(userAccount, ratePercent / 100);
             System.out.printf(
-                "Interest added. New balance: $%.2f%n",
-                userAccount.getBalance()
-            );
+                    "Interest added. New balance: $%.2f%n",
+                    userAccount.getBalance());
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid interest rate. No interest was added.");
         } catch (IllegalStateException e) {
@@ -242,6 +253,36 @@ public class MainMenu {
     }
 
     public void run() {
+        AdminMenu adminMenu = new AdminMenu();
+
+        while(true){
+            int role = selectRole();
+
+        while(role == 2){
+            adminMenu.displayOptions();
+            int choice = getUserSelection(4);
+
+            if(choice == 1){
+                performCollectFee();
+            }
+            else if(choice == 2){
+                performApplyInterest();
+            }
+            else if(choice == 3){
+                displayAdminActivityLog();
+            }
+            else if(choice == 4){
+                role = selectRole();
+            }
+            else{
+                System.out.println("Invalid selection");
+            }
+        }
+
+        if(role == 3){
+            return;
+        }
+
         int selection = -1;
 
         while (selection != EXIT_SELECTION) {
@@ -249,6 +290,7 @@ public class MainMenu {
             selection = getUserSelection(MAX_SELECTION);
             processInput(selection);
         }
+    }
     }
 
     public static void main(String[] args) {
