@@ -79,6 +79,9 @@ public class BankAccount {
     }
 
     public void collectFee(double amount) {
+        if(closed){
+            throw new IllegalStateException("Account is closed");
+        }
         if (amount <= 0) {
             throw new IllegalArgumentException();
         }
@@ -86,11 +89,14 @@ public class BankAccount {
     }
 
     public void applyInterest(double rate) {
+        if(closed){
+            throw new IllegalStateException("Account is closed");
+        }
         if (rate <= 0) {
             throw new IllegalArgumentException();
         }
-        if (this.balance < 0) {
-            throw new IllegalStateException();
+        if (balance < 0) {
+            throw new IllegalStateException("Account balance is negative");
         }
 
         this.balance += this.balance * rate;

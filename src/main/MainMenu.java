@@ -200,6 +200,10 @@ public class MainMenu {
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid fee amount. No fee was collected.");
         }
+        catch (IllegalStateException e) {
+            System.out.println(e.getMessage() + ". No fee was collected.");
+
+        }
     }
 
     public void performApplyInterest() {
@@ -214,7 +218,7 @@ public class MainMenu {
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid interest rate. No interest was added.");
         } catch (IllegalStateException e) {
-            System.out.println("Account balance is negative. No interest was added.");
+            System.out.println(e.getMessage() + ". No interest was added.");
         }
     }
 
@@ -234,8 +238,8 @@ public class MainMenu {
             int role = selectRole();
 
         while(role == 2){
-            adminMenu.displayOptions();
-            int choice = getUserSelection(3);
+            adminMenu.displayOptions(userAccount.getAccountName());
+            int choice = getUserSelection(4);
 
             if(choice == 1){
                 performCollectFee();
@@ -244,6 +248,9 @@ public class MainMenu {
                 performApplyInterest();
             }
             else if(choice == 3){
+                switchAccount();
+            }
+            else if(choice == 4){
                 role = selectRole();
             }
             else{
